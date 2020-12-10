@@ -2118,3 +2118,14 @@ word_index = 0
 for value in chunks:
     word_index += 1
     print("Word " + '{: >2d}'.format(word_index) + ": " + value + " " + '{: >6d}'.format(int(value, 2)) + "  " + wordList[int(value, 2)])
+
+#---------------------
+# Print as space delimited
+#---------------------
+
+mnemonic = []
+
+for value in chunks:
+    mnemonic.append(wordList[int(value, 2)])
+
+print("\nBIP39 Seed Phrase:\n\n" + " ".join(mnemonic))
