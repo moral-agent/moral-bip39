@@ -23,7 +23,7 @@ print("Use this tool at your own risk. Abandon all hope ye who enter here. Etc."
 print("------------------------------------------------------------------------\n\n")
 
 preimg = (long_random_string + serial_number).encode('utf-8')
-print("Input = " + preimg)
+print(f"Input = {preimg}")
 
 entropy = hashlib.sha256(preimg).hexdigest()
 print ("Input Hash = " + entropy)
