@@ -22,8 +22,10 @@ print("------------------------------------------------------------------------"
 print("Use this tool at your own risk. Abandon all hope ye who enter here. Etc.")
 print("------------------------------------------------------------------------\n\n")
 
-preimg = (long_random_string + serial_number).encode('utf-8')
+preimg = (serial_number + long_random_string).encode('utf-8')
 print(f"Input = {preimg}")
+
+print("WARNING: Serial number has been moved to the front, so if you sent funds to an old version of this tool I hope you kept your passphrase somewhere because the current version of this tool won't create the same passphrase. You can check out an older commit to get the old passphrase back.")
 
 entropy = hashlib.sha256(preimg).hexdigest()
 print ("Input Hash = " + entropy)
