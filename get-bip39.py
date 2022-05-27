@@ -2,40 +2,48 @@ import hashlib
 import sys
 
 #---------------------------------------
-# Input random stuff with enough entropy
+# Standardized way to use hash
 #---------------------------------------
 
-long_random_string = "totally random stuff like 100 dice rolls or 256 coin flips"
-serial_number = "1"
+def H(p):
+    return hashlib.sha256(p.encode('utf-8')).hexdigest().upper()
 
-#------------------------------------
-# Sanity check
-#------------------------------------
+#---------------------------------------
+# Input random stuff with enough entropy.
+#---------------------------------------
 
-if long_random_string == "totally random stuff like 100 dice rolls or 256 coin flips":
-    sys.exit("STOP! You must initialize this tool with your own randomness by editing the source code!")
+# Replace apple and banana each with totally random input like 100 dice rolls or 256 coin flips
+
+entropy_a = "apple"
+entropy_b = "banana"
+
+# The /000 are an index you can increment up to 999 if you want, to get lots of seed phrases from the same entropy.
+
+entropy_template = H(entropy_a + '/000')+'/'+H(entropy_b + '/000')+'/000'
 
 #------------------------------------
 # Get binary seed with BIP39 checksum
 #------------------------------------
-print("------------------------------------------------------------------------")
+print("\n\n------------------------------------------------------------------------")
 print("Use this tool at your own risk. Abandon all hope ye who enter here. Etc.")
 print("------------------------------------------------------------------------\n\n")
+print("------------------------")
+print("|  BIP 39 Seed Phrase  |")
+print("------------------------\n\n")
 
-preimg = (serial_number + long_random_string).encode('utf-8')
-print(f"Input = {preimg}")
+entropy = H(entropy_template)
 
-print("WARNING: Serial number has been moved to the front, so if you sent funds to an old version of this tool I hope you kept your passphrase somewhere because the current version of this tool won't create the same passphrase. You can check out an older commit to get the old passphrase back.")
+if entropy == "CEC860C0CB902410427A513A457FFADFF80B581270899664F77249401B7B1D77":
+    sys.exit("STOP! You must initialize this tool with your own randomness by editing the source code!")
 
-entropy = hashlib.sha256(preimg).hexdigest()
-print ("Input Hash = " + entropy)
+print ("Input Hash: " + entropy)
 
 entropyHashBytes = hashlib.sha256(bytearray.fromhex(entropy)).hexdigest()
-print ("Input Hash Hash = " + entropyHashBytes)
+print ("Input Hash Hash: " + entropyHashBytes)
 
-print ("Checksum Hex = " + entropyHashBytes[0:2])
+print ("Checksum Hex: " + entropyHashBytes[0:2])
 checksum = '{:08b}'.format(int(entropyHashBytes[0:2],16))
-print("Checksum Binary = " + checksum)
+print("Checksum Binary: " + checksum)
 
 binary_seed = ""
 
@@ -2131,3 +2139,49 @@ for value in chunks:
     mnemonic.append(wordList[int(value, 2)])
 
 print("\nBIP39 Seed Phrase:\n\n" + " ".join(mnemonic))
+
+print("\n\n---------------------")
+print("|  Easytype Format  |")
+print("---------------------\n")
+
+#--------------------------
+# Easytype format for passphrases instead of seed phrases
+#--------------------------
+
+easytypeDict = {
+    "0":"e",
+    "1":"r",
+    "2":"t",
+    "3":"y",
+    "4":"p",
+    "5":"a",
+    "6":"s",
+    "7":"d",
+    "8":"f",
+    "9":"g",
+    "A":"h",
+    "B":"j",
+    "C":"k",
+    "D":"x",
+    "E":"c",
+    "F":"n"
+}
+easytypeArr = []
+easytypePreimgArr = []
+i = 0
+for c in entropy:
+    easytypeArr.append(easytypeDict[c])
+    easytypePreimgArr.append(easytypeDict[c])
+    i += 1
+    if i == 48:
+        break
+    if i % 16 == 0:
+        easytypeArr.append("\n")
+    else:
+        if i % 4 == 0:
+            easytypeArr.append(" ")
+easytypeStr = ''.join(easytypeArr)
+print ("\nEasy Type Passphrase: \n\n" + easytypeStr)
+
+easytypeHash = H(''.join(easytypePreimgArr))
+print("\nChecksum: " + easytypeHash[0:4] + " " + easytypeHash[4:8])
