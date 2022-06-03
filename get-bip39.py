@@ -2162,7 +2162,7 @@ def print_password(entropy):
     print ("\nPassword: \n\n" + easytypeStr)
 
     easytypeHash = H(''.join(easytypePreimgArr))
-    print("\nChecksum: " + easytypeHash[0:4] + " " + easytypeHash[4:8])
+    print("\nChecksum: " + easytypeHash[0:3] + " " + easytypeHash[3:6])
 
 #---------------------------------------------------------------------------------------------
 #---------------------------------------------------------------------------------------------
